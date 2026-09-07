@@ -97,3 +97,28 @@ profiles. Old profiles were backed up before forcing a refresh.
 - The generated `.shortcut` files have never been imported or tapped on the
   device. Nothing about the launch path is verified end to end.
 
+
+## 2026-09-07 (later) — Keychain access group is no longer hardcoded
+
+`LauncherStore.keychainAccessGroup` held the literal string
+`<TEAMID>.com.example.plainphone.shared`. It is now `nil`.
+
+Keychain Services files an item into the first entry of the caller’s
+`keychain-access-groups` entitlement when no access group is supplied, and
+searches every entitled group when reading. Both targets declare exactly one
+entry, `$(AppIdentifierPrefix)com.example.plainphone.shared`, verified with
+`codesign -d --entitlements`, so omitting the attribute resolves to the same
+shared group without naming the team.
+
+Two problems went away: the repository no longer publishes the author’s team
+id, and a clone no longer needs that constant edited before app and widget can
+see each other’s data. The entitlement was always the source of truth; the
+constant was a copy that could only drift.
+
+No migration. Existing items were written to that same group, so unprefixed
+queries still find them.
+
+Verified: 79/79 tests, device build, install and launch; no keychain errors on
+the launch console. Confirmation that the stored layouts and typography
+settings survived is a visual check on the device.
+

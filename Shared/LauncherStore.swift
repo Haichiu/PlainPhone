@@ -193,12 +193,26 @@ final class LauncherStore: ObservableObject {
     /// same service + account on both sides.
     static let keychainService = "com.example.plainphone.shared"
     static let keychainAccount = "layouts.v1"
-    /// n=1 product: the signing team is fixed (72LR92LFT5), so the shared
-    /// access group is a build-stable constant matching the
-    /// `keychain-access-groups` entry `$(AppIdentifierPrefix)com.example.plainphone.shared`
-    /// in both .entitlements files. A multi-team build would derive this from
-    /// the resolved AppIdentifierPrefix instead.
-    static let keychainAccessGroup = "72LR92LFT5.com.example.plainphone.shared"
+    /// Deliberately nil: DO NOT put a team-prefixed string back here.
+    ///
+    /// Keychain Services files an item into the FIRST entry of the caller's
+    /// `keychain-access-groups` entitlement when no access group is given,
+    /// and searches every entry it is entitled to when reading. Both targets
+    /// declare exactly one entry —
+    /// `$(AppIdentifierPrefix)com.example.plainphone.shared` — so omitting
+    /// the attribute lands in that shared group by construction, and the
+    /// team prefix never has to be written down.
+    ///
+    /// This replaced a hardcoded `<TEAMID>.com.example.plainphone.shared`
+    /// constant (2026-09-07). Two things were wrong with it: it published the
+    /// author's team id, and anyone cloning the project had to find and edit
+    /// it before app and widget could see each other's data. The entitlement
+    /// was already the single source of truth; the constant was a copy of it
+    /// that could only ever drift.
+    ///
+    /// Existing items are unaffected: they were written to that same group,
+    /// so an unprefixed query still finds them. No migration.
+    static let keychainAccessGroup: String? = nil
 
     @Published private(set) var data: LauncherData
     /// True when stored bytes failed to decode. The original bytes are kept
