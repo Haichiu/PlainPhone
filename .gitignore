@@ -1,0 +1,39 @@
+# Build output
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# macOS
+.DS_Store
+
+# Agent/session state
+.pi/
+
+# Signing material — never publish
+*.mobileprovision
+*.p12
+*.cer
+
+# Owner personal data — deliberately not published.
+# These stay on the local
+# machine: they identify which apps (including banking apps) the owner has
+# installed, and a photo of their actual Home Screen.
+Shortcuts/
+Reference/
+Reference-app-home.png
+Scripts/prepare-shortcuts.py
+Scripts/overnight-relay.sh
+docs/
+
+# Internal working notes, not part of the published project
+AGENT_HANDOFF.md
+EXECUTION_PROMPT.md
+FINAL_CLEANUP.md
+LAST_ROOT_FIX.md
+REVIEW_FINDINGS.md
+REVIEW_FINDINGS_ROUND2.md
+REVIEW_FINDINGS_FINAL.md
+SCRIPT_EDGE_FIX.md
+
+Scripts/test_prepare_shortcuts.py
